@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Experiment 6 - jQuery Exercises</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f6ff;
+  --card:#ffffff;
+  --accent:#6b46ff;
+  --accent-2:#ff6b6b;
+  --muted:#6b7280;
+  --glass:linear-gradient(135deg, rgba(107,70,255,0.08), rgba(255,107,107,0.03));
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:'Poppins',system-ui,Arial;background:linear-gradient(180deg,#f3f6ff 0%,#fffaf6 100%);color:#1f2937;-webkit-font-smoothing:antialiased}
+.container{max-width:1100px;margin:28px auto;padding:20px}
+.header{display:flex;align-items:center;justify-content:space-between;padding:18px;border-radius:12px;background:var(--glass);box-shadow:0 10px 30px rgba(15,23,42,0.06);border:1px solid rgba(99,102,241,0.06)}
+.header .title{font-weight:600;color:var(--accent);font-size:1.1rem}
+.header .meta{font-size:0.9rem;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 360px;gap:18px;margin-top:18px}
+.card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 8px 24px rgba(15,23,42,0.04);border:1px solid rgba(0,0,0,0.03)}
+.card h3{margin:0 0 8px 0;color:var(--accent)}
+.small{font-size:0.88rem;color:var(--muted);margin-bottom:10px}
+.row{display:flex;gap:10px}
+.col{flex:1}
+label{display:block;font-size:0.86rem;color:#222;margin-bottom:6px}
+input[type="number"], input[type="text"], select{width:100%;padding:10px;border-radius:10px;border:1px solid #e6e7ee;font-size:0.95rem}
+input[type="checkbox"]{transform:scale(1.07);margin-right:6px}
+.btn{display:inline-block;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:600}
+.btn-primary{background:linear-gradient(90deg,var(--accent),#8a6bff);color:#fff;box-shadow:0 8px 20px rgba(107,70,255,0.12)}
+.btn-soft{background:transparent;border:1px solid #eef2ff;color:var(--accent);font-weight:600}
+.result{background:linear-gradient(180deg,rgba(107,70,255,0.04),rgba(255,255,255,0.02));padding:12px;border-radius:10px;font-weight:700;margin-top:10px}
+.note{font-size:0.85rem;color:var(--muted);margin-top:8px}
+.aside-list{display:flex;flex-direction:column;gap:8px}
+.kv{display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:linear-gradient(90deg,rgba(107,70,255,0.04),rgba(255,107,107,0.03));font-weight:600}
+.footer{margin-top:18px;text-align:center;color:var(--muted);font-size:0.9rem}
+.tag{display:inline-block;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent-2),#ff9b9b);color:#fff;font-weight:700;font-size:0.78rem}
+@media (max-width:980px){
+  .grid{grid-template-columns:1fr}
+  .header{flex-direction:column;gap:10px;align-items:flex-start}
+}
+.brandbar{display:flex;gap:8px;align-items:center}
+.logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#8a6bff);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;box-shadow:0 6px 18px rgba(107,70,255,0.12)}
+.small-muted{font-size:0.82rem;color:var(--muted)}
+.separator{height:1px;background:linear-gradient(90deg,transparent,#eee,transparent);margin:12px 0;border-radius:4px}
+.bad{padding:6px 8px;border-radius:8px;background:rgba(99,102,241,0.08);color:var(--accent);font-weight:700;font-size:0.82rem;display:inline-block}
+.select-hr{display:flex;gap:8px;align-items:center}
+.total-big{font-size:1.25rem;color:var(--accent-2)}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div style="display:flex;gap:14px;align-items:center">
+      <div class="logo">WT</div>
+      <div>
+        <div class="title">Experiment 6 · jQuery Actions</div>
+        <div class="small-muted">Make it colorful, keep it simple — <strong contenteditable="true">Your Name</strong></div>
+      </div>
+    </div>
+    <div class="meta">
+      <div><span class="tag">23CS2049</span></div>
+      <div style="margin-top:6px" class="small-muted">Lab: Dynamic Website Design with jQuery</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <div class="card" id="budget-card">
+        <h3>Question 1 — Budget Calculator</h3>
+        <div class="small">Enter total amount and percentage split for Room Rent, Accessories, Emergency, and Saving. Click Evaluate My Money to split. If percentages don't total 100 or division produces fractional paise, you'll get an alert.</div>
+
+        <div style="margin-top:10px" class="row">
+          <div class="col">
+            <label>Total Amount (₹)</label>
+            <input id="budget-amount" type="number" min="0" value="10000">
+          </div>
+          <div class="col">
+            <label>Evaluate</label>
+            <button id="budget-eval" class="btn btn-primary" style="width:100%">Evaluate My Money</button>
+          </div>
+        </div>
+
+        <div class="separator"></div>
+
+        <div class="row">
+          <div class="col">
+            <label>Room Rent (%)</label>
+            <input id="pct-room" type="number" min="0" value="40">
+          </div>
+          <div class="col">
+            <label>Accessories (%)</label>
+            <input id="pct-acc" type="number" min="0" value="20">
+          </div>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <div class="col">
+            <label>Emergency (%)</label>
+            <input id="pct-emer" type="number" min="0" value="20">
+          </div>
+          <div class="col">
+            <label>Saving (%)</label>
+            <input id="pct-save" type="number" min="0" value="20">
+          </div>
+        </div>
+
+        <div id="budget-output" class="result" style="margin-top:12px">Room: — | Accessories: — | Emergency: — | Saving: —</div>
+      </div>
+
+      <div class="card" style="margin-top:16px" id="cake-card">
+        <h3>Question 2 — Cake Order Calculator</h3>
+        <div class="small">Choose cake, size and add-ons. Quantity updates total. Price updates on change and typing.</div>
+
+        <div style="margin-top:8px" class="row">
+          <div class="col">
+            <label>Cake Type</label>
+            <select id="cake-type">
+              <option value="chocolate">Chocolate</option>
+              <option value="vanilla">Vanilla</option>
+              <option value="redvelvet">Red Velvet</option>
+              <option value="blackforest">Black Forest</option>
+            </select>
+          </div>
+          <div class="col">
+            <label>Size</label>
+            <select id="cake-size">
+              <option value="small">Small (6")</option>
+              <option value="medium">Medium (8")</option>
+              <option value="large">Large (10")</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:8px">
+          <div class="col">
+            <label>Quantity</label>
+            <input id="cake-qty" type="number" min="1" value="1">
+          </div>
+          <div class="col">
+            <label>Add-ons</label>
+            <div style="display:flex;gap:10px;align-items:center">
+              <label><input type="checkbox" id="addon-candles">Candles (+₹30)</label>
+              <label><input type="checkbox" id="addon-msg">Message (+₹80)</label>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+          <button id="cake-calc" class="btn btn-primary">Calculate Order</button>
+          <button id="cake-reset" class="btn btn-soft">Reset</button>
+        </div>
+
+        <div id="cake-output" class="result" style="margin-top:12px">Items: — | Total: —</div>
+      </div>
+
+      <div class="card" style="margin-top:16px" id="gst-card">
+        <h3>Question 3 — GST Calculator</h3>
+        <div class="small">Enter amount and choose GST rate to see Actual Amount, GST Amount and Total Amount. This uses keyup and change events.</div>
+
+        <div style="margin-top:10px" class="row">
+          <div class="col">
+            <label>Amount (₹)</label>
+            <input id="gst-amount" type="number" min="0" value="1500">
+          </div>
+          <div class="col">
+            <label>GST Rate (%)</label>
+            <select id="gst-rate">
+              <option value="0">0%</option>
+              <option value="5">5%</option>
+              <option value="12">12%</option>
+              <option value="18" selected>18%</option>
+              <option value="28">28%</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:12px" class="row">
+          <div class="col">
+            <button id="gst-calc" class="btn btn-primary" style="width:100%">Compute GST</button>
+          </div>
+          <div class="col">
+            <button id="gst-clear" class="btn btn-soft" style="width:100%">Clear</button>
+          </div>
+        </div>
+
+        <div id="gst-output" class="result" style="margin-top:12px">Actual: — | GST: — | Total: —</div>
+      </div>
+    </div>
+
+    <aside>
+      <div class="card">
+        <h3 style="color:var(--accent-2)">Quick Guide</h3>
+        <div class="small">This single page contains all three exercises required by the lab. The controls update using jQuery actions like click, change and keyup. You can edit the "Your Name" text at top to personalize it.</div>
+        <div class="separator"></div>
+        <div class="aside-list">
+          <div class="kv"><span>Budget Example</span><span>₹ 10,000</span></div>
+          <div class="kv"><span>Cake: Chocolate (Medium)</span><span>₹ 650</span></div>
+          <div class="kv"><span>GST Rate</span><span>18%</span></div>
+        </div>
+        <div class="separator"></div>
+        <div class="small-muted">Made to look like a student submission: simple layout, creative colors, editable name and minimal styling so it feels personal.</div>
+      </div>
+
+      <div class="card" style="margin-top:12px;text-align:center">
+        <div style="font-size:0.95rem;font-weight:700;color:var(--accent)">Submission</div>
+        <div class="note">Save this file as <strong>experiment6_jquery.html</strong> and open in your browser. jQuery is loaded from CDN and all logic runs in the page.</div>
+        <div style="margin-top:12px"><span class="bad">Good luck!</span></div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="footer">This page implements Experiment 6 exercises. Made by <strong contenteditable="true">Your Name</strong></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+$(document).ready(function(){
+  $('#budget-eval').click(function(){
+    var amt = parseFloat($('#budget-amount').val()) || 0;
+    var r = parseFloat($('#pct-room').val()) || 0;
+    var a = parseFloat($('#pct-acc').val()) || 0;
+    var e = parseFloat($('#pct-emer').val()) || 0;
+    var s = parseFloat($('#pct-save').val()) || 0;
+    var totalPct = r + a + e + s;
+    if(totalPct !== 100){
+      alert('Percentages must total 100%');
+      return;
+    }
+    function share(p){ return (amt * p) / 100; }
+    var roomShare = share(r);
+    var accShare = share(a);
+    var emerShare = share(e);
+    var saveShare = share(s);
+    function isWholeRupee(x){
+      return Math.round((x - Math.floor(x)) * 100) === 0 || Math.abs(Math.round(x * 100) - x*100) < 1e-6;
+    }
+    if(!isWholeRupee(roomShare) || !isWholeRupee(accShare) || !isWholeRupee(emerShare) || !isWholeRupee(saveShare)){
+      alert('Division results in fractional paise. Please adjust amount or percentages.');
+      return;
+    }
+    $('#budget-output').text('Room: ₹' + roomShare.toLocaleString() + ' | Accessories: ₹' + accShare.toLocaleString() + ' | Emergency: ₹' + emerShare.toLocaleString() + ' | Saving: ₹' + saveShare.toLocaleString());
+  });
+
+  $('#cake-type, #cake-size, #cake-qty, #addon-candles, #addon-msg').on('change keyup', function(){
+    updateCakePreview();
+  });
+
+  function updateCakePreview(){
+    var type = $('#cake-type').val();
+    var size = $('#cake-size').val();
+    var qty = parseInt($('#cake-qty').val()) || 1;
+    var candles = $('#addon-candles').is(':checked');
+    var msg = $('#addon-msg').is(':checked');
+    var base = 0;
+    if(type === 'chocolate') base = 450;
+    if(type === 'vanilla') base = 380;
+    if(type === 'redvelvet') base = 520;
+    if(type === 'blackforest') base = 480;
+    var sizeMult = 1;
+    if(size === 'small') sizeMult = 0.85;
+    if(size === 'medium') sizeMult = 1;
+    if(size === 'large') sizeMult = 1.35;
+    var perCake = Math.round(base * sizeMult);
+    var addons = 0;
+    if(candles) addons += 30;
+    if(msg) addons += 80;
+    var total = (perCake + addons) * qty;
+    $('#cake-output').text('Items: ' + qty + ' × ' + capitalize(type) + ' (' + size + ') | Total: ₹' + total.toLocaleString());
+  }
+
+  $('#cake-calc').click(function(){
+    updateCakePreview();
+    var outText = $('#cake-output').text();
+    alert('Order calculated:\n' + outText);
+  });
+
+  $('#cake-reset').click(function(){
+    $('#cake-type').val('chocolate');
+    $('#cake-size').val('medium');
+    $('#cake-qty').val(1);
+    $('#addon-candles').prop('checked', false);
+    $('#addon-msg').prop('checked', false);
+    $('#cake-output').text('Items: — | Total: —');
+  });
+
+  $('#gst-calc').click(function(){
+    var amt = parseFloat($('#gst-amount').val()) || 0;
+    var rate = parseFloat($('#gst-rate').val()) || 0;
+    if(amt <= 0){
+      $('#gst-output').text('Actual: — | GST: — | Total: —');
+      alert('Please enter a valid amount');
+      return;
+    }
+    var gstAmt = (amt * rate) / 100;
+    var total = amt + gstAmt;
+    $('#gst-output').text('Actual: ₹' + amt.toLocaleString() + ' | GST: ₹' + gstAmt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}) + ' | Total: ₹' + total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}));
+  });
+
+  $('#gst-clear').click(function(){
+    $('#gst-amount').val('');
+    $('#gst-output').text('Actual: — | GST: — | Total: —');
+  });
+
+  $('#gst-amount, #gst-rate').on('keyup change', function(){
+    var amt = parseFloat($('#gst-amount').val()) || 0;
+    var rate = parseFloat($('#gst-rate').val()) || 0;
+    if(amt > 0){
+      var gstAmt = (amt * rate) / 100;
+      var total = amt + gstAmt;
+      $('#gst-output').text('Actual: ₹' + amt.toLocaleString() + ' | GST: ₹' + gstAmt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}) + ' | Total: ₹' + total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}));
+    }
+  });
+
+  function capitalize(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  updateCakePreview();
+});
+</script>
+</body>
+</html>
